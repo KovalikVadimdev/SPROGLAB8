@@ -70,7 +70,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 	return TRUE;
 }
 
-char* intToBinaryString(int num, char* binaryString)
+char* intToBinaryString(int num, char* binaryString, char* binaryStringleft)
 {
 	int flags_before = 0;
 	int beforeCF = 0;
@@ -88,48 +88,70 @@ char* intToBinaryString(int num, char* binaryString)
 	int afterSF = 0;
 	int afterOF = 0;
 
+
 	__asm {
-		pushfd // Зберігаємо стан регістрів флагів на стеку
-		pop flags_before // Зберігаємо значення флагів у змінну flags_before
-		// Визначаємо значення флагів до виконання операції
-		mov eax, flags_before // Переміщаємо значення флагів у регістр eax
-		shr eax, 0 // Зсуваємо значення флагів на 0 біт
-		and eax, 1 // Перевіряємо значення флагу CF
-		mov beforeCF, eax // Зберігаємо значення флагу CF у змінну beforeCF
-		mov eax, flags_before // Переміщаємо значення флагів у регістр eax
-		shr eax, 2 // Зсуваємо значення флагів на 2 біти
-		and eax, 1 // Перевіряємо значення флагу PF
-		mov beforePF, eax // Зберігаємо значення флагу PF у змінну beforePF
-		mov eax, flags_before // Переміщаємо значення флагів у регістр eax
-		shr eax, 4 // Зсуваємо значення флагів на 4 біти
-		and eax, 1 // Перевіряємо значення флагу AF
-		mov beforeAF, eax // Зберігаємо значення флагу AF у змінну beforeAF
-		mov eax, flags_before // Переміщаємо значення флагів у регістр eax
-		shr eax, 6 // Зсуваємо значення флагів на 6 біт
-		and eax, 1 // Перевіряємо значення флагу ZF
-		mov beforeZF, eax // Зберігаємо значення флагу ZF у змінну beforeZF
-		mov eax, flags_before // Переміщаємо значення флагів у регістр eax
-		shr eax, 7 // Зсуваємо значення флагів на 7 біт
-		and eax, 1 // Перевіряємо значення флагу SF
-		mov beforeSF, eax // Зберігаємо значення флагу SF у змінну beforeSF
-		mov eax, flags_before // Переміщаємо значення флагів у регістр eax
-		shr eax, 11 // Зсуваємо значення флагів на 11 біт
-		and eax, 1 // Перевіряємо значення флагу OF
-		mov beforeOF, eax // Зберігаємо значення флагу OF у змінну beforeOF
-		mov eax, num // Move the number to register eax
-		mov edi, binaryString // Move the address of binaryString to edi
-		mov byte ptr[edi + 32], 0 // Null-terminate the string
-		mov ecx, 32 // Counter for 32 bits
+		mov eax, num
+		mov edi, binaryString
+		mov byte ptr[edi + 32], 0
+		mov ecx, 32
 		loop_start:
-		shr eax, 1 // Shift right by 1 (to get the least significant bit)
-			jnc zero_bit // If CF = 0, jump to zero_bit
-			mov byte ptr[edi + 31], '1' // Store '1' in binaryString
-			jmp next_bit // Jump to next_bit
+		shr eax, 1
+			jnc zero_bit
+			mov byte ptr[edi + 31], '1'
+			jmp next_bit
 			zero_bit :
-		mov byte ptr[edi + 31], '0' // Store '0' in binaryString
+		mov byte ptr[edi + 31], '0'
 			next_bit :
-			dec edi // Move to the next byte in binaryString
-			loop loop_start // Repeat loop until ecx becomes 0
+			dec edi 
+			loop loop_start
+
+			pushfd // Зберігаємо стан регістрів флагів на стеку
+			pop flags_before // Зберігаємо значення флагів у змінну flags_before
+			// Визначаємо значення флагів до виконання операції
+			mov eax, flags_before // Переміщаємо значення флагів у регістр eax
+			shr eax, 0 // Зсуваємо значення флагів на 0 біт
+			and eax, 1 // Перевіряємо значення флагу CF
+			mov beforeCF, eax // Зберігаємо значення флагу CF у змінну beforeCF
+			mov eax, flags_before // Переміщаємо значення флагів у регістр eax
+			shr eax, 2 // Зсуваємо значення флагів на 2 біти
+			and eax, 1 // Перевіряємо значення флагу PF
+			mov beforePF, eax // Зберігаємо значення флагу PF у змінну beforePF
+			mov eax, flags_before // Переміщаємо значення флагів у регістр eax
+			shr eax, 4 // Зсуваємо значення флагів на 4 біти
+			and eax, 1 // Перевіряємо значення флагу AF
+			mov beforeAF, eax // Зберігаємо значення флагу AF у змінну beforeAF
+			mov eax, flags_before // Переміщаємо значення флагів у регістр eax
+			shr eax, 6 // Зсуваємо значення флагів на 6 біт
+			and eax, 1 // Перевіряємо значення флагу ZF
+			mov beforeZF, eax // Зберігаємо значення флагу ZF у змінну beforeZF
+			mov eax, flags_before // Переміщаємо значення флагів у регістр eax
+			shr eax, 7 // Зсуваємо значення флагів на 7 біт
+			and eax, 1 // Перевіряємо значення флагу SF
+			mov beforeSF, eax // Зберігаємо значення флагу SF у змінну beforeSF
+			mov eax, flags_before // Переміщаємо значення флагів у регістр eax
+			shr eax, 11 // Зсуваємо значення флагів на 11 біт
+			and eax, 1 // Перевіряємо значення флагу OF
+			mov beforeOF, eax // Зберігаємо значення флагу OF у змінну beforeOF
+
+
+			mov eax, num
+			rol eax, 1
+			mov edi, binaryStringleft
+			mov byte ptr[edi + 32], 0
+			mov ecx, 32
+			loop_startleft:
+		shr eax, 1
+			jnc zero_bitleft
+			mov byte ptr[edi + 31], '1'
+			jmp next_bitleft
+			zero_bitleft :
+		mov byte ptr[edi + 31], '0'
+			next_bitleft :
+			dec edi
+			loop loop_startleft
+
+
+
 			pushfd // Зберігаємо стан регістрів флагів на стеку
 			pop flags_after // Зберігаємо значення флагів у змінну flags_before
 			// Визначаємо значення флагів після виконання операції
@@ -159,13 +181,14 @@ char* intToBinaryString(int num, char* binaryString)
 			mov afterOF, eax // Зберігаємо значення флагу OF у змінну afterOF
 	}
 	// Виводимо значення флагів до та після виконання операції
+	
 	char flags[100];
 	sprintf_s(flags, "CF=%d PF=%d AF=%d ZF=%d SF=%d OF=%d", beforeCF, beforePF, beforeAF, beforeZF, beforeSF, beforeOF);
-	TextOut(GetDC(g_hEdit), 5, 130, flags, strlen(flags));
+	TextOut(GetDC(g_hEdit), 5, 120, flags, strlen(flags));
+	TextOut(GetDC(g_hEdit), 5, 140, binaryStringleft, 32);
 	sprintf_s(flags, "CF=%d PF=%d AF=%d ZF=%d SF=%d OF=%d", afterCF, afterPF, afterAF, afterZF, afterSF, afterOF);
-	TextOut(GetDC(g_hEdit), 5, 150, flags, strlen(flags));
-	// Виводимо значення флагів до та після виконання операції
-	// Виводимо значення флагів до та після виконання операції
+	TextOut(GetDC(g_hEdit), 5, 160, flags, strlen(flags));
+	
 	return binaryString;
 }
 
@@ -176,9 +199,10 @@ void ConvertAndDisplayBinary() {
 	int num = atoi(inputText);
 	// Convert the number to binary string
 	char binaryString[33];
+	char binaryStringleft[33];
 
 	// Display the result in a message box
-	TextOut(GetDC(g_hEdit), 5, 100, intToBinaryString(num, binaryString), 32);
+	TextOut(GetDC(g_hEdit), 5, 100, intToBinaryString(num, binaryString, binaryStringleft), 32);
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
